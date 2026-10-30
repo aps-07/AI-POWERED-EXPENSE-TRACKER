@@ -1,9 +1,12 @@
+import os
 from dotenv import load_dotenv
-from openai import OpenAI
+from groq import Groq
 
 load_dotenv()
+client = Groq(
+    api_key=os.getenv("GROQ_API_KEY")
+)
 
-client = OpenAI()
 
 import tkinter as aps
 import tkcalendar as asr
@@ -13,7 +16,7 @@ next_row = 2
 
 root = aps.Tk()
 root.title("DAILY EXPENSE TRACKER")
-root.geometry("850x790+400+100")
+root.geometry("850x700+400+100")
 root["bg"] = "peach puff"
 
 date_list = []
@@ -21,24 +24,51 @@ amount_list = []
 category_list = []
 
 
+
 def ask_ai():
+    question = user_prompt.get().strip()
+
+    if not question:
+        return
+
     prompt = f"""
-    Here is my expense data:
+    You are an expense analysis assistant.
+
+    Here is the user's expense data:
 
     Dates: {date_list}
     Amounts: {amount_list}
     Categories: {category_list}
 
-    Analyze my expenses and tell me where I am spending the most.
+    User's question:
+    {question}
+
+    Answer the user's question using the expense data.
+    If the data is insufficient, say so instead of inventing information.
+    Instructions:
+    - Answer in natural, conversational language.
+    - Use simple and clear sentences.
+    - Do not use Markdown headings, tables, bullet points, or bold text.
+    - Avoid lengthy explanations and unnecessary advice.
+    - Keep the answer concise and friendly.
+    - Use the provided expense data only.
+    - If useful, suggest one practical way to reduce spending.
+    - If the data is insufficient, explain that clearly.
     """
 
-    response = client.responses.create(
-        model="gpt-5.6-luna",
-        input=prompt
+    response = client.chat.completions.create(
+        model="openai/gpt-oss-20b",
+        messages=[
+            {"role": "user", "content": prompt}
+        ]
     )
 
+    bot_reply = response.choices[0].message.content
+
+    print(f"\nBot: {bot_reply}")
+
     ai_output.delete("1.0", aps.END)
-    ai_output.insert(aps.END, response.output_text)
+    ai_output.insert(aps.END, bot_reply)
 
 
 def add_expense():
@@ -128,7 +158,7 @@ def show_piechart():
 # CALENDAR WORK
 def show_data(event):
     Date_entered.delete(0,aps.END) # delete entrybox text from start to end
-    Date_entered.insert(0,cal.get_date()) # insert at index 0 in entrybox the given text, cal.get_date() returns the selected date as string.
+    Date_entered.insert(0,cal.get_date()) # insert at index 0 in entrybox the given text, cal.get_date() returns the selected date as string.   
 cal = asr.Calendar(root,date_pattern="dd-mm-yyyy",font=("Arial",11))
 cal.grid(row=0,column=0)
 cal.bind("<<CalendarSelected>>",show_data)
@@ -146,7 +176,7 @@ Category_text = aps.Entry(top_right_frame,font=("Arial",11),width=20)
 Category_text.grid(row=1,column=2)
 
 Date = aps.Label(top_right_frame,text="Date Selected: ",bg="peach puff").grid(row=2,column=1,pady=17)
-Date_entered= aps.Entry(top_right_frame,font=("Arial",11),width=20)
+Date_entered = aps.Entry(top_right_frame,font=("Arial",11),width=20)
 Date_entered.grid(row=2,column=2)
 
 Note = aps.Label(top_right_frame,text="Enter the Note: ",bg="peach puff").grid(row=3,column=1,pady=17)
@@ -166,15 +196,14 @@ category = aps.Label(root,text="CATEGORY",bg="yellow").grid(row=1,column=3,padx=
 matplot = aps.Button(root,text="SHOW GRAPH VISUALS",font=("Arial",10),background="lightgreen",command=show_graph).grid(row=20,column=2,pady=15)
 pie = aps.Button(root,text="SHOW PIE CHART",font=("Arial",10),background="lightgreen",command=show_piechart).grid(row=20,column=0,pady=15)
 
-ai_button = aps.Button(
-    root,
-    text="ASK AI",
-    command=ask_ai
-)
+#llm work
 
-ai_button.grid(row=20, column=3, pady=15)
+ai_button = aps.Button(root,text="ASK AI",command=ask_ai).grid(row=21, column=3, pady=15)
+
+user_prompt = aps.Entry(root,width=70,font=("Arial",11))
+user_prompt.grid(row=21,column=0, columnspan=4, padx=20, pady=10)
 
 ai_output = aps.Text(root, height=10, width=70, wrap="word")
-ai_output.grid(row=21, column=0, columnspan=4, padx=20, pady=10)
+ai_output.grid(row=22, column=0, columnspan=4, padx=20, pady=10)
 
 root.mainloop()
