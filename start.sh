@@ -16,7 +16,7 @@ x11vnc -storepasswd "$VNC_PASSWORD" /root/.vnc/passwd
 Xvfb :0 -screen 0 1280x800x24 &
 sleep 2
 
-fluxbox &
+fluxbox -no-slit &
 
 x11vnc -display :0 \
     -forever \
