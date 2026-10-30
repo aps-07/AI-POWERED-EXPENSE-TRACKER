@@ -9,7 +9,14 @@ sleep 2
 
 fluxbox &
 
-x11vnc -display :0 -forever -shared -nopw -rfbport 5900 &
+mkdir -p /root/.vnc
+x11vnc -storepasswd "$VNC_PASSWORD" /root/.vnc/passwd
+
+x11vnc -display :0 \
+    -forever \
+    -shared \
+    -rfbauth /root/.vnc/passwd \
+    -rfbport 5900 &
 
 websockify --web=/usr/share/novnc/ 0.0.0.0:10000 localhost:5900 &
 
