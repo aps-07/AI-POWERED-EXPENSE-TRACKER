@@ -1,4 +1,4 @@
-tkcalendar
-matplotlib
-python-dotenv
 groq
+python-dotenv
+matplotlib
+tkcalendar
