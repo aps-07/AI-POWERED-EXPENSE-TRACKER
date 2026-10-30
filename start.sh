@@ -25,6 +25,19 @@ x11vnc -display :0 \
     -rfbauth /root/.vnc/passwd \
     -rfbport 5900 &
 
+cat > /usr/share/novnc/index.html <<'EOF'
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="refresh" content="0; url=/vnc.html?autoconnect=true">
+    <title>Expense Tracker</title>
+</head>
+<body>
+    Redirecting to Expense Tracker...
+</body>
+</html>
+EOF
+
 websockify --web=/usr/share/novnc/ \
     0.0.0.0:$PORT localhost:5900 &
 
