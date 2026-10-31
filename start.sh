@@ -25,6 +25,9 @@ x11vnc -display :0 \
     -rfbauth /root/.vnc/passwd \
     -noxdamage \
     -noxfixes \
+    -noxdamage \
+    -noxfixes \
+    -ncache 10 \
     -rfbport 5900 &
 
 cat > /usr/share/novnc/index.html <<'EOF'
