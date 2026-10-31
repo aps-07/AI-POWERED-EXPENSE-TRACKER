@@ -27,7 +27,6 @@ x11vnc -display :0 \
     -noxfixes \
     -noxdamage \
     -noxfixes \
-    -ncache 10 \
     -rfbport 5900 &
 
 cat > /usr/share/novnc/index.html <<'EOF'
