@@ -15,7 +15,7 @@ next_row = 2
 
 root = aps.Tk()
 root.title("DAILY EXPENSE TRACKER")
-root.geometry("850x700+400+100")
+root.geometry("1000x700+50+50")
 root["bg"] = "peach puff"
 
 date_list = []
