@@ -13,7 +13,7 @@ mkdir -p /root/.vnc
 
 x11vnc -storepasswd "$VNC_PASSWORD" /root/.vnc/passwd
 
-Xvfb :0 -screen 0 1600x1000x24 &
+Xvfb :0 -screen 0 1920x1080x24 &
 sleep 2
 
 fluxbox -no-slit &
